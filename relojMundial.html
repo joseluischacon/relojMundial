@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reloj Mundial</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #243B55, #141E30);
+            color: #fff;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        #clock-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: #00c6ff;
+            color: white;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0084b4;
+        }
+
+        .city-time {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .city-time span {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reloj Mundial</h1>
+    <div id="clock-container">
+        <select id="city-select">
+            <option value="America/New_York">Nueva York, USA</option>
+            <option value="Europe/London">Londres, UK</option>
+            <option value="Europe/Paris">París, Francia</option>
+            <option value="Asia/Tokyo">Tokio, Japón</option>
+            <option value="Australia/Sydney">Sídney, Australia</option>
+            <option value="Europe/Moscow">Moscú, Rusia</option>
+            <option value="America/Los_Angeles">Los Ángeles, USA</option>
+            <option value="Asia/Dubai">Dubái, UAE</option>
+        </select>
+        <button id="add-city">Agregar Ciudad</button>
+        <div id="cities-container"></div>
+    </div>
+
+    <script>
+        const citySelect = document.getElementById('city-select');
+        const addCityButton = document.getElementById('add-city');
+        const citiesContainer = document.getElementById('cities-container');
+
+        const cities = {};
+
+        function updateTime() {
+            const now = new Date();
+            for (const [city, timeElement] of Object.entries(cities)) {
+                const options = { timeZone: city, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                const cityTime = new Intl.DateTimeFormat('es-ES', options).format(now);
+                timeElement.querySelector('.time').textContent = cityTime;
+            }
+        }
+
+        function addCity() {
+            const city = citySelect.value;
+            if (cities[city]) return; // Avoid adding the same city twice
+
+            const cityName = citySelect.options[citySelect.selectedIndex].text;
+            const cityTimeElement = document.createElement('div');
+            cityTimeElement.className = 'city-time';
+            cityTimeElement.innerHTML = `<span>${cityName}</span><span class="time"></span>`;
+            citiesContainer.appendChild(cityTimeElement);
+            cities[city] = cityTimeElement;
+            updateTime();
+        }
+
+        addCityButton.addEventListener('click', addCity);
+        setInterval(updateTime, 1000); // Update time every second
+    </script>
+</body>
+</html>
